@@ -1,0 +1,11 @@
+#__Author__ = yazhao
+
+
+class PTalkingSys:
+    def __init__(self):
+        print 'Talking system for naoqi'
+
+    def parse_sentence(self, sentence):
+        print 'parsing sentence module'
+        return ''
+
