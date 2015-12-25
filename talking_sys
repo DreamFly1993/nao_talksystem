@@ -1,9 +1,21 @@
-#__Author__ = yazhao
-
+# __Author__ = yazhao
+# Coding='utf-8'
 
 class PTalkingSys:
+    state_m = 10
+    action_n = 8
+
     def __init__(self):
         print 'Talking system for naoqi'
+        self.matrix_q = [[0 for _ in range(self.action_n)]] * self.state_m
+        self.matrix_r = [[0 for _ in range(self.action_n)]] * self.state_m
+        print 'initiate finished'
+
+    def q_learning_moudle(self):
+        print 'q_learning for training'
+        print '__begin__'
+
+        print '__end__'
 
     def parse_sentence(self, sentence):
         print 'parsing sentence module'
