@@ -1,15 +1,22 @@
 # __Author__ = yazhao
 # Coding='utf-8'
 
+
 class PTalkingSys:
-    state_m = 10
-    action_n = 8
 
     def __init__(self):
         print 'Talking system for naoqi'
+        self.state_m = 10
+        self.action_n = 8
+        self.q_lambda = 0.1
         self.matrix_q = [[0 for _ in range(self.action_n)]] * self.state_m
         self.matrix_r = [[0 for _ in range(self.action_n)]] * self.state_m
+        self.matrix_trans = dict()
         print 'initiate finished'
+
+    def count_qvalue(self, state, act):
+        q_reward = self.matrix_r[state][act]
+        state_new = self.matrix_q
 
     def q_learning_moudle(self):
         print 'q_learning for training'
@@ -21,3 +28,5 @@ class PTalkingSys:
         print 'parsing sentence module'
         return ''
 
+    def get_weather(self):
+        print ''
