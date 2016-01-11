@@ -11,6 +11,7 @@ class PTalkingSys(object):
         self.state_m = 6
         self.action_n = 6
         self.q_lambda = 0.8
+        self.__unit_time = time.time()
         self.matrix_q = [[0 for _ in range(self.action_n)] for _ in range(self.state_m)]
 #        self.matrix_r = [[0 for _ in range(self.action_n)]] * self.state_m
 
@@ -71,12 +72,10 @@ class PTalkingSys(object):
         return ''
 
     @property
-    def constant(self):
-        return ["Cons"]
-
-    def __get_weather(self):
-        self.constant
-        print ''
+    def unit_time(self):
+        return self.__unit_time
 
 a = PTalkingSys()
-a.q_learning_moudle(10)
+# a.q_learning_moudle(10)
+print a.unit_time
+
