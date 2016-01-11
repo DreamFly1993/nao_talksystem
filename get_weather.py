@@ -5,6 +5,7 @@
 import requests
 import json
 import time
+from utils import get_logger as loggers
 
 '''
 Example:
@@ -41,6 +42,7 @@ class GetWeather:
         self.city = '海淀'
         self.date = [0]
         self.today = 0
+        self.__unit_time = time.time()
         # 4+1+1 days from from today
         self.max_tate = 4
         print 'get weather from http://wthrcdn.etouch.cn/weather_mini?city='
@@ -69,7 +71,17 @@ class GetWeather:
                 x = weather["forecast"][cur_date]
                 print x["date"] + x["fengli"] + x["fengxiang"] + x["low"] + '-' + x["high"]
 
+    @property
+    def unit_time(self):
+        return self.__unit_time
 
-a = GetWeather()
-a.set_date([1, 2])
-a.get_weather_data()
+    @unit_time.setter
+    def unit_time(self, value):
+        self.__unit_time = value
+
+if __name__ == '__main__':
+    a = GetWeather()
+    a.set_date([1, 2])
+    a.get_weather_data()
+    loggers().warning('this is just for test')
+

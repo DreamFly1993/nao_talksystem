@@ -1,5 +1,8 @@
-#Coding = 'utf-8'
+# coding = 'utf-8'
+
 import random
+import time
+
 
 class OrderRoom(object):
     def __init__(self, q_num, ac_num):
@@ -19,6 +22,7 @@ class OrderRoom(object):
                        neutral(most times)
                     * nao action
         """
+        self.__unit_time = time.time()
         self.state_num = 3
         self.act_num = 5
         self.matrix_q = [[0 for _ in range(self.act_num)] for _ in range(self.state_num)]
@@ -26,6 +30,7 @@ class OrderRoom(object):
                          [10, 100, 50, 75, 1],
                          [1, 10, 100, 10, 1]]
         self.q_lambda = 0.8
+        self.__waiting_time = 0
 
     def q_learning_teach(self, if_cancel):
         """
@@ -66,6 +71,33 @@ class OrderRoom(object):
             print self.matrix_q
         print '__end__'
 
-    def __del__(self):
-        print 'del function'
+    @property
+    def unit_time(self):
+        return self.__unit_time
 
+    @unit_time.setter
+    def unit_time(self, value):
+        self.__unit_time = value
+
+    @property
+    def waiting_time(self):
+        if self.__waiting_time:
+            self.__waiting_time -= self.__waiting_time
+        return self.__waiting_time
+
+    @waiting_time.setter
+    def waiting_time(self, value):
+        self.__waiting_time = value
+
+    def parsing_sen(self, input_pair):
+        """
+        :param input_pair: word pos pair after jieba.posing
+        :return: true or false
+            True: this sentence is talking about room-oder or room-order is already finished.
+            False: others
+        """
+        word_list = []
+        flag_list = []
+        for cur_pair in input_pair:
+            word_list.append(cur_pair.word)
+            flag_list.append(cur_pair.flag)

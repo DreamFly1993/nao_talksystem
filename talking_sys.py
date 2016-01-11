@@ -1,29 +1,38 @@
-# __Author__ = yazhao
-# Coding='utf-8'
+# coding: utf-8
+import nltk
 import random
+import jieba
+import jieba.posseg as pseg
+from utils import Write2Log as tolog
 import time
 
 
 class PTalkingSys(object):
 
     def __init__(self):
+        """
+        demonstrating robot, mainly used for show MDS or DS
+        Introduces: system contains
+            1) active function units lists
+            2) all function units
+            3) history action lists(talking sentences, parsing answers)
+        :return:
+        """
         print 'Talking system for naoqi'
         self.state_m = 6
         self.action_n = 6
         self.q_lambda = 0.8
         self.__unit_time = time.time()
+        self.word2mean = {'会议室': 'room', '开会': 'room', '天气': 'weather', '摘要': 'abstract'}
         self.matrix_q = [[0 for _ in range(self.action_n)] for _ in range(self.state_m)]
 #        self.matrix_r = [[0 for _ in range(self.action_n)]] * self.state_m
+        self.__active_unit = []
 
         self.matrix_r = [[-1, -1, -1, -1, 0, -1], [-1, -1, -1, 0, -1, 100],
                          [-1, -1, -1, 0, -1, -1], [-1, 0, 0, -1, 0, -1],
                          [0, -1, -1, 0, -1, 100], [-1, 0, -1, -1, 0, 100]]
         self.matrix_trans = dict()
         print 'initiate finished'
-
-    def count_qvalue(self, state, act):
-        q_reward = self.matrix_r[state][act]
-        state_new = self.matrix_q
 
     def q_learning_moudle(self, exploid_num):
         """
@@ -65,17 +74,32 @@ class PTalkingSys(object):
             print self.matrix_q
         print '__end__'
 
-    @staticmethod
-    def parse_sentence(sentence):
-        print 'parsing sentence module'
-        print sentence
-        return ''
-
     @property
     def unit_time(self):
         return self.__unit_time
 
-a = PTalkingSys()
-# a.q_learning_moudle(10)
-print a.unit_time
+    @unit_time.setter
+    def unit_time(self, value):
+        self.__unit_time = value
+
+    def sen_parse(self, in_sen):
+        print u'sentence parsing unit'
+        print 'input_sen: ' + in_sen
+        print len(in_sen)
+        in_sen = raw_input('please input the sentence you want to say: ')
+        print type(in_sen)
+        in_sen = in_sen.decode('utf-8')
+        print len(in_sen)
+        in_list = pseg.cut(in_sen)
+        for w in in_list:
+            print w.word + w.flag
+
+
+if __name__ == '__main__':
+    a = PTalkingSys()
+
+#   a.q_learning_moudle(10)
+#   b = pseg.cut('帮我找个地方开会')
+
+
 
