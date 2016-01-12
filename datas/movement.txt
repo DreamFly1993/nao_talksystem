@@ -1,0 +1,29 @@
+YY      抬手
+RWristYaw       -1.0    0.5
+RElbowRoll      1.5     0.3
+RShoulderPitch  -0.3    0.5
+RElbowRoll      1.0     0.3
+RShoulderPitch  1.5     0.5
+RElbowRoll      0.5     0.3
+RWristYaw       0.0     0.3
+YY      伸手
+LWristYaw       1.25    0.2
+LShoulderPitch  0.5     0.5
+LElbowRoll      0.8     0.1
+LShoulderPitch  0.0     0.2
+LShoulderPitch  1.5     0.5
+LElbowRoll      0.5     0.5
+LWristYaw       0.0     0.2
+YY      抬腿
+RWristYaw       -1.0    0.5
+RElbowRoll      1.5     0.3
+RShoulderPitch  -0.3    0.5
+RElbowRoll      1.0     0.3
+RShoulderPitch  1.5     0.5
+RElbowRoll      0.5     0.3
+RWristYaw       0.0     0.3
+YY      举手    举个手
+LElbowRoll      -1.5    0.5
+LShoulderPitch  -0.5    0.5
+LShoulderPitch  1.5     0.6
+LElbowRoll      0.5     0.5

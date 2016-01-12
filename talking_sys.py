@@ -1,5 +1,4 @@
 # coding: utf-8
-import nltk
 import random
 import jieba
 import jieba.posseg as pseg
@@ -31,6 +30,7 @@ class PTalkingSys(object):
         self.matrix_r = [[-1, -1, -1, -1, 0, -1], [-1, -1, -1, 0, -1, 100],
                          [-1, -1, -1, 0, -1, -1], [-1, 0, 0, -1, 0, -1],
                          [0, -1, -1, 0, -1, 100], [-1, 0, -1, -1, 0, 100]]
+
         self.matrix_trans = dict()
         print 'initiate finished'
 
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     a = PTalkingSys()
 
 #   a.q_learning_moudle(10)
-#   b = pseg.cut('帮我找个地方开会')
 
+    b = pseg.cut('帮我找个地方开会')
 
 
