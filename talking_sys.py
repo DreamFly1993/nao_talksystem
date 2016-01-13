@@ -4,6 +4,7 @@ import jieba
 import jieba.posseg as pseg
 from utils import Write2Log as tolog
 import time
+import order_room
 
 
 class PTalkingSys(object):
@@ -25,7 +26,11 @@ class PTalkingSys(object):
         self.word2mean = {'会议室': 'room', '开会': 'room', '天气': 'weather', '摘要': 'abstract'}
         self.matrix_q = [[0 for _ in range(self.action_n)] for _ in range(self.state_m)]
 #        self.matrix_r = [[0 for _ in range(self.action_n)]] * self.state_m
+
+        # active unit queue
         self.__active_unit = []
+        # history unit queue
+        self.__history_unit = []
 
         self.matrix_r = [[-1, -1, -1, -1, 0, -1], [-1, -1, -1, 0, -1, 100],
                          [-1, -1, -1, 0, -1, -1], [-1, 0, 0, -1, 0, -1],
@@ -94,12 +99,19 @@ class PTalkingSys(object):
         for w in in_list:
             print w.word + w.flag
 
+    def do_work(self):
+        cur_sen = ''
+        if '会议室' in cur_sen or '开会' in cur_sen:
+            active_unit = order_room.OrderRoom()
+            self.__active_unit.append(active_unit)
+            while active_unit.parsing_sen(pseg.cut(cur_sen)):
+                cur_sen = raw_input('\t: ')
 
 if __name__ == '__main__':
-    a = PTalkingSys()
+    b = pseg.cut('帮我定一个下午十点，200人左右的会议室')
+    for work in b:
+        print work.word + ' ' + work.flag
+
+#    a = PTalkingSys()
 
 #   a.q_learning_moudle(10)
-
-    b = pseg.cut('帮我找个地方开会')
-
-

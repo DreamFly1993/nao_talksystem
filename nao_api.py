@@ -1,6 +1,7 @@
 # coding: utf-8
 from naoqi import ALProxy
 import random
+import math
 
 __base_move = ['HeadYaw', 'HeadPitch', 'RShoulderPitch', 'RShoulderRoll', 'RElbowYaw',
                'RElbowRoll', 'RWristYaw', 'RHand', 'LShoulderPitch', 'LShoulderRoll',
@@ -9,9 +10,8 @@ __base_move = ['HeadYaw', 'HeadPitch', 'RShoulderPitch', 'RShoulderRoll', 'RElbo
                'LAnkleRoll', 'RHipRoll', 'RHipPitch', 'RKneePitch', 'RAnklePitch',
                'RAnkleRoll']
 
-#global __action_dict
-action_dict = {u'抬手': 'HandUp', u'伸手': 'HandOut', u'挠头': 'HeadScratch'}
-
+action_dict = {u'抬手': 'HandUp', u'伸手': 'HandOut'}
+inline_action = {u'摇头': 'head_shake', u'挠头': 'head_scratch'}
 # __action_dict = {u'点头': 'nodHead', u'表示同意': 'nodHead', u'点下头': 'nodHead',
 #                 u'点个头': 'nodHead', u'点点头': 'nodHead', u'摇头': 'shakeHead',
 #                 u'摇个头': 'shakeHead', u'摇下头': 'shakeHead',
@@ -76,8 +76,9 @@ class NaoApi(object):
         # 初始化动作模块
         self.motion_proxy = ALProxy("ALMotion", robot_ip, robot_port)
         self.memory_proxy = ALProxy("ALMemory", robot_ip, robot_port)
+        self.tts_proxy = ALProxy("ALTextToSpeech", robot_ip, robot_port)
 
-    def shake_head(self, act_parameter):
+    def head_shake(self, act_parameter):
         """
         :param act_parameter: action parameters(shake times, shake speed)
         :return: true or false
@@ -85,8 +86,9 @@ class NaoApi(object):
         """
         print 'shake head'
         print act_parameter
-        if type(act_parameter) != 'list':
-            print u'参数错误'
+        print type(act_parameter)
+#        if type(act_parameter) != 'list':
+#            print u'参数123'
 
         if len(act_parameter) != 2:
             print u'参数错误'
@@ -101,21 +103,72 @@ class NaoApi(object):
 
         if act_parameter[0] == 0:
             duration_num = random.randrange(0, 5)
+            print 'end'
 
         angles = random.random()
         for i in range(duration_num):
             self.motion_proxy.angleInterpolation("HeadYaw", angles, act_time, True)
+            angles *= -1
+        self.motion_proxy.setAngles("HeadYaw", 0, act_time)
 
-    def do_action(self, act_name, act_parameter):
+    def head_scratch(self, act_parameter):
+        """
+        RWristYaw       62.7    0.5
+        RElbowRoll      39.1    0.5
+        RShoulderRoll   -32.1   0.5
+        RShoulderPitch  -48.1   0.5
+        RElbowYaw       89.5    0.5
+        RHand           0       0.5
+        :param act_parameter:
+        :return:
+        """
+        print 'head scratch'
+        names = ["RShoulderPitch", "RShoulderRoll", "RElbowYaw", "RElbowRoll", "RWristYaw"]
+        angles = [[-29.9 * math.pi / 180], [-28.7 * math.pi / 180],
+                  [36.9 * math.pi / 180], [88.7 * math.pi / 180],
+                  [81.7 * math.pi / 180]]
+        times = [[1.0] for _ in range(5)]
+        print times
+        self.motion_proxy.angleInterpolation(names, angles, times, True)
+        hand_angle = [0.52, 0.8] * 5
+        hand_time = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        print hand_angle
+        hand_angle = hand_angle[0:random.randrange(2, 5) * 2]
+        hand_time = hand_time[0:len(hand_angle)]
+        self.motion_proxy.angleInterpolation("RHand", hand_angle, hand_time, True)
+#        self.motion_proxy.standInit()
+#        self.motion_proxy.angleInterpolation("RShoulderPitch", -29.9 * math.pi / 180, 1, True)
+#        self.motion_proxy.angleInterpolation("RShoulderRoll", -28.7 * math.pi / 180, 1, True)
+#        self.motion_proxy.angleInterpolation("RElbowYaw", 36.9 * math.pi / 180, 1, True)
+#        self.motion_proxy.angleInterpolation("RElbowRoll", 88.7 * math.pi / 180, 1, True)
+#        self.motion_proxy.angleInterpolation("RWristYaw", 81.7 * math.pi / 180, 1, True)
+
+    @staticmethod
+    def do_action(act_name, act_parameter):
         print 'do action'
-        act_name = act_name.decode('utf-8')
-        if act_name in action_dict:
-            print u'当前动作一直'
-            act_code = action_dict[act_name]
-
+#        act_name = act_name.decode('utf-8')
+        if act_name in inline_action:
+            print 'action known'
+            act_code = inline_action[act_name]
+            run_code = eval('self.' + act_code)
+            run_code(act_parameter)
+        else:
+            return 'action unknown'
 
     @property
     def set_to_end(self):
         self.__if_end = True
         return self.__if_end
 
+    def say_something(self, to_tts):
+        self.tts_proxy.say(to_tts)
+
+__nao_api = NaoApi()
+
+
+def naoqi_api():
+    return __nao_api
+
+if __name__ == '__main__':
+    a = NaoApi()
+    a.do_action('挠头'.decode('utf-8'), [0, 0])

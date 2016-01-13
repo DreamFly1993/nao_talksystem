@@ -1,0 +1,4 @@
+Wed, 13 Jan 2016 11:37:30 __init__.py[line:111] Building prefix dict from the default dictionary ...
+Wed, 13 Jan 2016 11:37:30 __init__.py[line:131] Loading model from cache /tmp/jieba.cache
+Wed, 13 Jan 2016 11:37:30 __init__.py[line:163] Loading model cost 0.255 seconds.
+Wed, 13 Jan 2016 11:37:30 __init__.py[line:164] Prefix dict has been built succesfully.

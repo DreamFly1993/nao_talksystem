@@ -1,3 +1,4 @@
+#name           angle   time
 YY      抬手
 RWristYaw       -1.0    0.5
 RElbowRoll      1.5     0.3
@@ -6,6 +7,13 @@ RElbowRoll      1.0     0.3
 RShoulderPitch  1.5     0.5
 RElbowRoll      0.5     0.3
 RWristYaw       0.0     0.3
+YY      挠头
+RWristYaw       62.7    0.5
+RElbowRoll      39.1    0.5
+RShoulderRoll   -32.1   0.5
+RShoulderPitch  -48.1   0.5
+RElbowYaw       89.5    0.5
+RHand           0       0.5
 YY      伸手
 LWristYaw       1.25    0.2
 LShoulderPitch  0.5     0.5
