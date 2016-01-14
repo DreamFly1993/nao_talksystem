@@ -1,4 +1,4 @@
-Wed, 13 Jan 2016 11:37:30 __init__.py[line:111] Building prefix dict from the default dictionary ...
-Wed, 13 Jan 2016 11:37:30 __init__.py[line:131] Loading model from cache /tmp/jieba.cache
-Wed, 13 Jan 2016 11:37:30 __init__.py[line:163] Loading model cost 0.255 seconds.
-Wed, 13 Jan 2016 11:37:30 __init__.py[line:164] Prefix dict has been built succesfully.
+Thu, 14 Jan 2016 14:53:42 connectionpool.py[line:259] Starting new HTTP connection (1): wthrcdn.etouch.cn
+Thu, 14 Jan 2016 14:53:42 connectionpool.py[line:390] Setting read timeout to None
+Thu, 14 Jan 2016 14:53:42 connectionpool.py[line:430] "GET /weather_mini?city=%E6%B5%B7%E6%B7%80 HTTP/1.1" 200 None
+Thu, 14 Jan 2016 14:53:42 get_weather.py[line:85] this is just for test

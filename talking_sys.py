@@ -5,6 +5,8 @@ import jieba.posseg as pseg
 from utils import Write2Log as tolog
 import time
 import order_room
+import nao_api
+import get_weather
 
 
 class PTalkingSys(object):
@@ -99,19 +101,34 @@ class PTalkingSys(object):
         for w in in_list:
             print w.word + w.flag
 
-    def do_work(self):
-        cur_sen = ''
+    def do_work(self, cur_sen):
         if '会议室' in cur_sen or '开会' in cur_sen:
             active_unit = order_room.OrderRoom()
             self.__active_unit.append(active_unit)
-            while active_unit.parsing_sen(pseg.cut(cur_sen)):
+            while active_unit.do_work(pseg.cut(cur_sen)) != '':
                 cur_sen = raw_input('\t: ')
+        if '天气' in cur_sen:
+            weather = get_weather.GetWeather()
+            if '今天' in cur_sen:
+                weather.date = [0]
+            elif '近两天' in cur_sen:
+                weather.date = [0, 1]
+            elif '近几天' in cur_sen:
+                weather.date = [0, 1, 2]
+            sen = weather.get_weather_data()
+            nao_api.naoqi_api().say_something(sen)
+            print 'get weather'
+        print 'order end!'
 
 if __name__ == '__main__':
-    b = pseg.cut('帮我定一个下午十点，200人左右的会议室')
-    for work in b:
-        print work.word + ' ' + work.flag
+    a = PTalkingSys()
+    input_seg = raw_input('\t: ')
+    while input_seg != 'exit':
+        a.do_work(input_seg)
+        input_seg = raw_input('\t: ')
 
-#    a = PTalkingSys()
+#    b = pseg.cut('帮我定一个下午十点，200人左右的会议室')
+#    for work in b:
+#        print work.word + ' ' + work.flag
 
 #   a.q_learning_moudle(10)

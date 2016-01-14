@@ -5,6 +5,7 @@ import time
 import jieba.posseg as pseg
 import nao_api
 
+
 class RoomParameters(object):
     def __init__(self):
         print 'Initial function. You see this means you have new a OrderRoom class'
@@ -187,9 +188,21 @@ class OrderRoom(object):
 
     def do_work(self, input_pair):
         print 'do work'
+        self.__if_begin = False
         parse_ans = self.parsing_sen(input_pair)
-
-        return True
+        if parse_ans:
+            self.select_action()
+        else:
+            return ''
+        print 'start to make sentences: '
+        i = 0
+        for name in self.__slot2func:
+            if self.__slot2func[name].unit_state not in {'STOP', 'FORCE_QUIT'}:
+                break
+            i += 1
+        if i == 4:
+            return ''
+        return parse_ans
 
     def parsing_sen(self, input_pair):
         """
@@ -211,7 +224,7 @@ class OrderRoom(object):
         tmp_list = [0, 0, 0, 0]
         if_confirm = False
         self.__user_pre_action = self.__user_action[:]
-        self.__user_action = [-1, -1, -1, -1]
+        self.__user_action = ['', '', '', '']
         i = 0
         while i < len(word_list):
             print word_list[i]
@@ -219,7 +232,7 @@ class OrderRoom(object):
                 if u'对' in word_list[i:]:
                     self.__slot2func[word_list[i]].update_state('CONFIRM')
                     self.__user_action[self.__name2num[word_list[i]]] = 'CONFIRM'
-                elif u'不对' in word_list[i:]:
+                elif u'不' in ''.join(word_list[i:]):
                     self.__slot2func[word_list[i]].update_state('REJECT')
                     self.__user_action[self.__name2num[word_list[i]]] = 'REJECT'
                 elif if_confirm:
@@ -246,6 +259,12 @@ class OrderRoom(object):
                     self.room_place.change_times = random.randrange(4)
                     self.room_place.update_state('CHANGE')
                     self.__user_action[0] = 'CHANGE'
+                    nao_api.naoqi_api().say_something(u'你确定要把' +
+                                                      self.room_place.slot_value +
+                                                      u'改成' + value + u'吗？我不清楚' +
+                                                      value + '在那？')
+                    nao_api.naoqi_api().head_scratch([0, 0])
+
                 else:
                     self.room_place.slot_value = value
                     self.room_place.update_state('TELL')
@@ -267,7 +286,6 @@ class OrderRoom(object):
                     self.room_time.change_times = random.randrange(4)
                     self.room_time.update_state('CHANGE')
                     self.__user_action[3] = 'CHANGE'
-                    print 'sfkskfaskfhkfjksdf'
                 else:
                     self.room_time.slot_value = value
                     self.room_time.update_state('TELL')
@@ -334,9 +352,24 @@ class OrderRoom(object):
                         self.__user_action[1] = 'TELL'
                     continue
             i += 1
+        print 'tmp_list: ' + str(tmp_list)
+        print sum(tmp_list)
+        print self.__if_begin
         if sum(tmp_list) == 0 and not self.__if_begin:
             print 'did not found message about room order!'
             return False
+
+        if if_confirm:
+            for name in self.__slot2func:
+                i = self.__name2num[name]
+                if self.__user_pre_action[i] != '' and self.__user_action[i] == '':
+                    self.__user_action[i] = 'CONFIRM'
+                    self.__slot2func[name].update_state('CONFIRM')
+
+#        for name in self.__slot2func:
+#            i = self.__name2num[name]
+#            if self.__user_pre_action[i] != '' and self.__user_action == '':
+#                self.__slot2func[name].update_state('')
 
         print 'time: ' + self.room_time.slot_value + \
               '\tplace: ' + self.room_place.slot_value + \
@@ -346,11 +379,27 @@ class OrderRoom(object):
         print 'user_pre_act: ' + str(self.__user_pre_action)
         return True
 
+    def select_action(self):
+        print 'do action according to states'
+        self.__pre_action = self.__cur_action[:]
+        for name in self.__slot2func:
+            i = self.__name2num[name]
+            if self.__user_action[i] == '':
+                continue
+            self.__cur_action[i] = self.__slot2func[name].get_best_action()
+            print name + ': ' + str(self.__cur_action[i])
+
+    def make_sentences(self):
+        print 'make sentences'
+
+
 if __name__ == '__main__':
     a = OrderRoom()
     b = raw_input('\t: ')
     while b != 'exit':
-        a.parsing_sen(pseg.cut(b))
+        a.do_work(pseg.cut(b))
+#        a.parsing_sen(pseg.cut(b))
+#        a.select_action()
 #        c = pseg.cut(b)
 #        for i in c:
 #            print i.word + ' ' + i.flag

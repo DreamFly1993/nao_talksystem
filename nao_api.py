@@ -72,11 +72,13 @@ class NaoApi(object):
         print '连接至nao'
         self.__if_end = False
         robot_port = 9559
+#        robot_ip = '10.108.226.218'
         robot_ip = '127.0.0.1'
         # 初始化动作模块
         self.motion_proxy = ALProxy("ALMotion", robot_ip, robot_port)
         self.memory_proxy = ALProxy("ALMemory", robot_ip, robot_port)
         self.tts_proxy = ALProxy("ALTextToSpeech", robot_ip, robot_port)
+        self.tts_proxy.setLanguage("Chinese")
 
     def head_shake(self, act_parameter):
         """
@@ -131,7 +133,8 @@ class NaoApi(object):
         print times
         self.motion_proxy.angleInterpolation(names, angles, times, True)
         hand_angle = [0.52, 0.8] * 5
-        hand_time = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+#        hand_time = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        hand_time = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
         print hand_angle
         hand_angle = hand_angle[0:random.randrange(2, 5) * 2]
         hand_time = hand_time[0:len(hand_angle)]
@@ -161,7 +164,9 @@ class NaoApi(object):
         return self.__if_end
 
     def say_something(self, to_tts):
-        self.tts_proxy.say(to_tts)
+        print to_tts.encode('utf-8')
+        print type(to_tts.encode('utf-8'))
+        self.tts_proxy.say(to_tts.encode('utf-8'))
 
 __nao_api = NaoApi()
 

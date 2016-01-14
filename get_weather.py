@@ -36,7 +36,7 @@ Example:
 '''
 
 
-class GetWeather:
+class GetWeather(object):
     def __init__(self):
         self.url = 'http://wthrcdn.etouch.cn/weather_mini?city='
         self.city = '海淀'
@@ -49,7 +49,6 @@ class GetWeather:
 
     def set_date(self, cur_time):
         if not isinstance(cur_time, list):
-            print 'sdfsdf'
             return -1
         self.date = cur_time
 
@@ -59,6 +58,7 @@ class GetWeather:
         if self.today == 0:
             self.today = int(time.strftime("%d", time.localtime()))
 
+        ans = ''
         weather_html = requests.get(self.url + self.city).text
         weather_json = json.loads(weather_html)
         weather = weather_json['data']
@@ -66,11 +66,11 @@ class GetWeather:
         for cur_date in self.date:
             if cur_date == -1:
                 x = weather["yesterday"]
-                print x["date"] + x["fl"] + x["fx"] + x["low"] + '-' + x["high"]
+                ans = x["date"] + x["fl"] + x["fx"] + x["low"] + '-' + x["high"]
             else:
                 x = weather["forecast"][cur_date]
-                print x["date"] + x["fengli"] + x["fengxiang"] + x["low"] + '-' + x["high"]
-
+                ans = x["date"] + x["fengli"] + x["fengxiang"] + x["low"] + '-' + x["high"]
+        return ans
     @property
     def unit_time(self):
         return self.__unit_time
